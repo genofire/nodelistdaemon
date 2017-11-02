@@ -1,7 +1,7 @@
 package runtime
 
 var transformers []func([]byte, string, *Fetcher) error = []func([]byte, string, *Fetcher) error{
-	transformNodelist, transformMeshviewerV2, transformMeshviewerV1,
+	transformNodelist, transformMeshviewerV2, transformMeshviewerV1, transformMeshviewerFFRGB, transformYanic,
 }
 
 func transform(body []byte, site_code string, f *Fetcher) {

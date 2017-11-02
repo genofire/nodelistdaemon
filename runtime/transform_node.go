@@ -4,6 +4,7 @@ import (
 	"github.com/FreifunkBremen/yanic/jsontime"
 
 	yanicMeshviewer "github.com/FreifunkBremen/yanic/output/meshviewer"
+	yanicMeshviewerFFRGB "github.com/FreifunkBremen/yanic/output/meshviewer-ffrgb"
 	yanicNodelist "github.com/FreifunkBremen/yanic/output/nodelist"
 	yanicRuntime "github.com/FreifunkBremen/yanic/runtime"
 )
@@ -43,6 +44,26 @@ func transformMeshviewerNode(n *yanicMeshviewer.Node, sitecode string) *Node {
 				Lat: pos.Latitude,
 				Lon: pos.Longtitude,
 			}
+		}
+		return node
+	}
+	return nil
+}
+
+func transformMeshviewerFFRGBNode(n *yanicMeshviewerFFRGB.Node, sitecode string) *Node {
+	node := &Node{
+		NodeID:    n.NodeID,
+		Hostname:  n.Hostname,
+		SiteCode:  sitecode,
+		Firstseen: n.Firstseen,
+		Lastseen:  n.Lastseen,
+		IsOnline:  n.IsOnline,
+		Clients:   n.Clients,
+	}
+	if pos := n.Location; pos != nil {
+		node.Location = &Location{
+			Lat: pos.Latitude,
+			Lon: pos.Longtitude,
 		}
 		return node
 	}

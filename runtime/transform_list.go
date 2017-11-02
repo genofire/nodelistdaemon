@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	yanicMeshviewer "github.com/FreifunkBremen/yanic/output/meshviewer"
+	yanicMeshviewerFFRGB "github.com/FreifunkBremen/yanic/output/meshviewer-ffrgb"
 	yanicNodelist "github.com/FreifunkBremen/yanic/output/nodelist"
 	yanicRuntime "github.com/FreifunkBremen/yanic/runtime"
 )
@@ -40,6 +41,19 @@ func transformMeshviewerV1(body []byte, sitecode string, f *Fetcher) error {
 	if err == nil {
 		for _, node := range nodes.List {
 			nodeEntry := transformMeshviewerNode(node, sitecode)
+			f.AddNode(nodeEntry)
+		}
+		return nil
+	}
+	return err
+}
+
+func transformMeshviewerFFRGB(body []byte, sitecode string, f *Fetcher) error {
+	var nodes yanicMeshviewerFFRGB.Meshviewer
+	err := json.Unmarshal(body, &nodes)
+	if err == nil {
+		for _, node := range nodes.Nodes {
+			nodeEntry := transformMeshviewerFFRGBNode(node, sitecode)
 			f.AddNode(nodeEntry)
 		}
 		return nil

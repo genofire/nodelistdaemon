@@ -15,7 +15,7 @@ type Fetcher struct {
 	filePath      string
 	repeat        time.Duration
 	directoryList map[string]string
-	List          map[string]*Node `json:"nodes"`
+	List          []*Node `json:"nodes"`
 	nodesMutex    sync.Mutex
 	closed        bool
 }
@@ -26,7 +26,6 @@ func NewFetcher(url string, repeat time.Duration, filePath string) *Fetcher {
 		repeat:     repeat,
 		filePath:   filePath,
 		nodesMutex: sync.Mutex{},
-		List:       make(map[string]*Node),
 	}
 }
 
@@ -37,6 +36,7 @@ func (f *Fetcher) Start() {
 		case <-timer.C:
 			f.work()
 			f.save()
+			f.List = []*Node{}
 			timer.Reset(f.repeat)
 		}
 	}
@@ -50,7 +50,7 @@ func (f *Fetcher) Stop() {
 func (f *Fetcher) AddNode(n *Node) {
 	if n != nil {
 		f.nodesMutex.Lock()
-		f.List[n.NodeID] = n
+		f.List = append(f.List, n)
 		f.nodesMutex.Unlock()
 	}
 }
@@ -125,5 +125,4 @@ func (f *Fetcher) save() {
 			log.Panic(err)
 		}
 	}
-
 }
