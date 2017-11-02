@@ -6,11 +6,10 @@ import (
 	yanicMeshviewer "github.com/FreifunkBremen/yanic/output/meshviewer"
 	yanicMeshviewerFFRGB "github.com/FreifunkBremen/yanic/output/meshviewer-ffrgb"
 	yanicNodelist "github.com/FreifunkBremen/yanic/output/nodelist"
-	yanicRuntime "github.com/FreifunkBremen/yanic/runtime"
 )
 
-func transformNodelistNode(n *yanicNodelist.Node, sitecode string) *Node {
-	node := &Node{
+func transformNodelistNode(n *yanicNodelist.Node, sitecode string) *yanicMeshviewerFFRGB.Node {
+	node := &yanicMeshviewerFFRGB.Node{
 		NodeID:    n.ID,
 		Hostname:  n.Name,
 		SiteCode:  sitecode,
@@ -20,17 +19,17 @@ func transformNodelistNode(n *yanicNodelist.Node, sitecode string) *Node {
 		Clients:   n.Status.Clients,
 	}
 	if pos := n.Position; pos != nil {
-		node.Location = &Location{
-			Lat: pos.Lat,
-			Lon: pos.Long,
+		node.Location = &yanicMeshviewerFFRGB.Location{
+			Latitude:   pos.Lat,
+			Longtitude: pos.Long,
 		}
 	}
 	return node
 }
 
-func transformMeshviewerNode(n *yanicMeshviewer.Node, sitecode string) *Node {
+func transformMeshviewerNode(n *yanicMeshviewer.Node, sitecode string) *yanicMeshviewerFFRGB.Node {
 	if nodeinfo := n.Nodeinfo; nodeinfo != nil {
-		node := &Node{
+		node := &yanicMeshviewerFFRGB.Node{
 			NodeID:    nodeinfo.NodeID,
 			Hostname:  nodeinfo.Hostname,
 			SiteCode:  sitecode,
@@ -40,51 +39,9 @@ func transformMeshviewerNode(n *yanicMeshviewer.Node, sitecode string) *Node {
 			Clients:   n.Statistics.Clients,
 		}
 		if pos := nodeinfo.Location; pos != nil {
-			node.Location = &Location{
-				Lat: pos.Latitude,
-				Lon: pos.Longtitude,
-			}
-		}
-		return node
-	}
-	return nil
-}
-
-func transformMeshviewerFFRGBNode(n *yanicMeshviewerFFRGB.Node, sitecode string) *Node {
-	node := &Node{
-		NodeID:    n.NodeID,
-		Hostname:  n.Hostname,
-		SiteCode:  sitecode,
-		Firstseen: n.Firstseen,
-		Lastseen:  n.Lastseen,
-		IsOnline:  n.IsOnline,
-		Clients:   n.Clients,
-	}
-	if pos := n.Location; pos != nil {
-		node.Location = &Location{
-			Lat: pos.Latitude,
-			Lon: pos.Longtitude,
-		}
-		return node
-	}
-	return nil
-}
-
-func transformYanicNode(n *yanicRuntime.Node, sitecode string) *Node {
-	if nodeinfo := n.Nodeinfo; nodeinfo != nil {
-		node := &Node{
-			NodeID:    nodeinfo.NodeID,
-			Hostname:  nodeinfo.Hostname,
-			SiteCode:  sitecode,
-			Firstseen: n.Firstseen,
-			Lastseen:  n.Lastseen,
-			IsOnline:  n.Online,
-			Clients:   n.Statistics.Clients.Total,
-		}
-		if pos := nodeinfo.Location; pos != nil {
-			node.Location = &Location{
-				Lat: pos.Latitude,
-				Lon: pos.Longtitude,
+			node.Location = &yanicMeshviewerFFRGB.Location{
+				Latitude:   pos.Latitude,
+				Longtitude: pos.Longtitude,
 			}
 		}
 		return node

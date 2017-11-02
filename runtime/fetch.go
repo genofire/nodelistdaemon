@@ -8,6 +8,9 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"github.com/FreifunkBremen/yanic/jsontime"
+	yanicMeshviewerFFRGB "github.com/FreifunkBremen/yanic/output/meshviewer-ffrgb"
 )
 
 type Fetcher struct {
@@ -15,7 +18,8 @@ type Fetcher struct {
 	filePath      string
 	repeat        time.Duration
 	directoryList map[string]string
-	List          []*Node `json:"nodes"`
+	Timestemp     jsontime.Time                `json:"timestamp"`
+	List          []*yanicMeshviewerFFRGB.Node `json:"nodes"`
 	nodesMutex    sync.Mutex
 	closed        bool
 }
@@ -34,9 +38,10 @@ func (f *Fetcher) Start() {
 	for !f.closed {
 		select {
 		case <-timer.C:
+			f.Timestemp = jsontime.Now()
 			f.work()
 			f.save()
-			f.List = []*Node{}
+			f.List = []*yanicMeshviewerFFRGB.Node{}
 			timer.Reset(f.repeat)
 		}
 	}
@@ -47,7 +52,7 @@ func (f *Fetcher) Stop() {
 	f.closed = true
 }
 
-func (f *Fetcher) AddNode(n *Node) {
+func (f *Fetcher) AddNode(n *yanicMeshviewerFFRGB.Node) {
 	if n != nil {
 		f.nodesMutex.Lock()
 		f.List = append(f.List, n)

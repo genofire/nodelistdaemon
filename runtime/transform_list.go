@@ -53,8 +53,7 @@ func transformMeshviewerFFRGB(body []byte, sitecode string, f *Fetcher) error {
 	err := json.Unmarshal(body, &nodes)
 	if err == nil {
 		for _, node := range nodes.Nodes {
-			nodeEntry := transformMeshviewerFFRGBNode(node, sitecode)
-			f.AddNode(nodeEntry)
+			f.AddNode(node)
 		}
 		return nil
 	}
@@ -66,7 +65,7 @@ func transformYanic(body []byte, sitecode string, f *Fetcher) error {
 	err := json.Unmarshal(body, &nodes)
 	if err == nil {
 		for _, node := range nodes.List {
-			nodeEntry := transformYanicNode(node, sitecode)
+			nodeEntry := yanicMeshviewerFFRGB.NewNode(nil, node)
 			f.AddNode(nodeEntry)
 		}
 		return nil
